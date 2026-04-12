@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>قائمة المطعم | Restaurant Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #f9f5f0;
+      --card-bg: #ffffff;
+      --text-main: #2c2420;
+      --text-muted: #6b5e57;
+      --accent: #b8860b;
+      --accent-hover: #9a7009;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 2px solid var(--accent);
+    }
+    header h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; }
+    header p { color: var(--text-muted); font-size: 1rem; }
+    .categories {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      position: sticky;
+      top: 10px;
+      background: var(--bg-color);
+      padding: 10px 0;
+      z-index: 10;
+    }
+    .cat-btn {
+      padding: 10px 18px;
+      border: 2px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .menu-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .menu-item:hover { transform: translateY(-4px); }
+    .menu-item h3 { font-size: 1.3rem; margin-bottom: 6px; }
+    .menu-item p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px; }
+    .price {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      background: var(--accent);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
+    .hidden { display: none; }
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 20px 0;
+      border-top: 1px dashed #ccc;
+    }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      .menu-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🍽️ قائمة الطعام</h1>
+    <p>أشهى الأطباق المعدة بعناية وجودة عالية</p>
+  </header>
+
+  <div class="categories">
+    <button class="cat-btn active" data-cat="all">الكل</button>
+    <button class="cat-btn" data-cat="starters">مقبلات</button>
+    <button class="cat-btn" data-cat="mains">أطباق رئيسية</button>
+    <button class="cat-btn" data-cat="desserts">حلويات</button>
+    <button class="cat-btn" data-cat="drinks">مشروبات</button>
+  </div>
+
+  <div class="menu-grid" id="menuContainer">
+    <div class="menu-item" data-category="starters">
+      <h3>سلطة سيزر</h3>
+      <p>خس طازج، دجاج مشوي، جبنة بارميزان، وصلصة السيزر الخاصة</p>
+      <span class="price">٢٥ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="starters">
+      <h3>حمص بالطحينة</h3>
+      <p>حمص كريمي ممزوج بالطحينة وزيت الزيتون مع الخبز العربي الطازج</p>
+      <span class="price">١٨ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="mains">
+      <h3>ستيك لحم مشوي</h3>
+      <p>لحم بقري عالي الجودة مع الخضار المشوية وصلصة الفطر</p>
+      <span class="price">٨٥ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="mains">
+      <h3>برجر كلاسيك</h3>
+      <p>لحم أنغوس ٢٠ غرام، جبنة شيدر، خس، طماطم، وصلصة خاصة</p>
+      <span class="price">٤٢ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="desserts">
+      <h3>تشيز كيك توت</h3>
+      <p>قاعدة بسكويت مقرمشة مع طبقة كريمية وتوت طازج</p>
+      <span class="price">٣٠ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="desserts">
+      <h3>كنافة نابلسية</h3>
+      <p>كنافة ساخنة محشوة بالجبنة ومغموسة بقطر الورد والفستق</p>
+      <span class="price">٢٨ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="drinks">
+      <h3>عصير ليمون نعناع</h3>
+      <p>منعش وطبيعي ١٠٠٪ بدون سكر مضاف</p>
+      <span class="price">١٢ ر.س</span>
+    </div>
+    <div class="menu-item" data-category="drinks">
+      <h3>قهوة عربية مميزة</h3>
+      <p>محمصة على الطريقة التقليدية مع الهيل والزعفران</p>
+      <span class="price">١٥ ر.س</span>
+    </div>
+  </div>
+
+  <footer>
+    <p>© ٢٠٢٤ جميع الحقوق محفوظة | مطعم الذوق الرفيع</p>
+    <p>📍 الموقع: شارع الملك فهد، الرياض | 📞 للحجز: 0500000000</p>
+  </footer>
+
+  <script>
+    const buttons = document.querySelectorAll('.cat-btn');
+    const items = document.querySelectorAll('.menu-item');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const category = btn.getAttribute('data-cat');
+        items.forEach(item => {
+          if (category === 'all' || item.getAttribute('data-category') === category) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
