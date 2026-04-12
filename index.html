@@ -1,187 +1,179 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>قائمة المطعم | Restaurant Menu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #f9f5f0;
-      --card-bg: #ffffff;
-      --text-main: #2c2420;
-      --text-muted: #6b5e57;
-      --accent: #b8860b;
-      --accent-hover: #9a7009;
-      --shadow: 0 4px 12px rgba(0,0,0,0.08);
-      --radius: 14px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      background: var(--bg-color);
-      color: var(--text-main);
-      line-height: 1.6;
-      padding: 20px;
-    }
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding: 20px 0;
-      border-bottom: 2px solid var(--accent);
-    }
-    header h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 5px; }
-    header p { color: var(--text-muted); font-size: 1rem; }
-    .categories {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-      position: sticky;
-      top: 10px;
-      background: var(--bg-color);
-      padding: 10px 0;
-      z-index: 10;
-    }
-    .cat-btn {
-      padding: 10px 18px;
-      border: 2px solid var(--accent);
-      background: transparent;
-      color: var(--accent);
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    .cat-btn:hover, .cat-btn.active {
-      background: var(--accent);
-      color: white;
-    }
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-    .menu-item {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s;
-      position: relative;
-      overflow: hidden;
-    }
-    .menu-item:hover { transform: translateY(-4px); }
-    .menu-item h3 { font-size: 1.3rem; margin-bottom: 6px; }
-    .menu-item p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px; }
-    .price {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      background: var(--accent);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-weight: 700;
-    }
-    .hidden { display: none; }
-    footer {
-      text-align: center;
-      margin-top: 40px;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      padding: 20px 0;
-      border-top: 1px dashed #ccc;
-    }
-    @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
-      .menu-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>قائمة الطعام الإلكترونية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e67e22; /* لون الهوية - برتقالي */
+            --dark-color: #2c3e50;
+            --light-bg: #f9f9f9;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .category-btn {
+            background: white;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .menu-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .menu-item:hover {
+            transform: scale(1.02);
+        }
+
+        .menu-item img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            margin-left: 15px;
+        }
+
+        .item-details {
+            flex-grow: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .item-desc {
+            font-size: 13px;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #bdc3c7;
+        }
+
+        /* تنسيق خاص للهواتف */
+        @media (max-width: 480px) {
+            .menu-item {
+                padding: 10px;
+            }
+            .item-name { font-size: 16px; }
+            .item-price { font-size: 16px; }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>🍽️ قائمة الطعام</h1>
-    <p>أشهى الأطباق المعدة بعناية وجودة عالية</p>
-  </header>
 
-  <div class="categories">
-    <button class="cat-btn active" data-cat="all">الكل</button>
-    <button class="cat-btn" data-cat="starters">مقبلات</button>
-    <button class="cat-btn" data-cat="mains">أطباق رئيسية</button>
-    <button class="cat-btn" data-cat="desserts">حلويات</button>
-    <button class="cat-btn" data-cat="drinks">مشروبات</button>
-  </div>
+<header>
+    <div class="logo">مطعم شيبابيك</div>
+</header>
 
-  <div class="menu-grid" id="menuContainer">
-    <div class="menu-item" data-category="starters">
-      <h3>سلطة سيزر</h3>
-      <p>خس طازج، دجاج مشوي، جبنة بارميزان، وصلصة السيزر الخاصة</p>
-      <span class="price">٢٥ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="starters">
-      <h3>حمص بالطحينة</h3>
-      <p>حمص كريمي ممزوج بالطحينة وزيت الزيتون مع الخبز العربي الطازج</p>
-      <span class="price">١٨ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="mains">
-      <h3>ستيك لحم مشوي</h3>
-      <p>لحم بقري عالي الجودة مع الخضار المشوية وصلصة الفطر</p>
-      <span class="price">٨٥ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="mains">
-      <h3>برجر كلاسيك</h3>
-      <p>لحم أنغوس ٢٠٠ غرام، جبنة شيدر، خس، طماطم، وصلصة خاصة</p>
-      <span class="price">٤٢ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="desserts">
-      <h3>تشيز كيك توت</h3>
-      <p>قاعدة بسكويت مقرمشة مع طبقة كريمية وتوت طازج</p>
-      <span class="price">٣٠ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="desserts">
-      <h3>كنافة نابلسية</h3>
-      <p>كنافة ساخنة محشوة بالجبنة ومغموسة بقطر الورد والفستق</p>
-      <span class="price">٢٨ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="drinks">
-      <h3>عصير ليمون نعناع</h3>
-      <p>منعش وطبيعي ١٠٠٪ بدون سكر مضاف</p>
-      <span class="price">١٢ ر.س</span>
-    </div>
-    <div class="menu-item" data-category="drinks">
-      <h3>قهوة عربية مميزة</h3>
-      <p>محمصة على الطريقة التقليدية مع الهيل والزعفران</p>
-      <span class="price">١٥ ر.س</span>
-    </div>
-  </div>
+<div class="categories">
+    <button class="category-btn active">الكل</button>
+    <button class="category-btn">مشويات</button>
+    <button class="category-btn">مقبلات</button>
+    <button class="category-btn">مشروبات</button>
+</div>
 
-  <footer>
-    <p>© ٢٠٢٤ جميع الحقوق محفوظة | مطعم الذوق الرفيع</p>
-    <p>📍 الموقع: شارع الملك فهد، الرياض | 📞 للحجز: 0500000000</p>
-  </footer>
+<div class="menu-container">
+    <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="كباب">
+        <div class="item-details">
+            <div class="item-name">كباب لحم بلدي</div>
+            <div class="item-desc">3 أسياخ لحم طازج مشوي على الفحم مع الخضروات</div>
+        </div>
+        <div class="item-price">45 ر.س</div>
+    </div>
 
-  <script>
-    const buttons = document.querySelectorAll('.cat-btn');
-    const items = document.querySelectorAll('.menu-item');
+    <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1541518763669-27fef04b14ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="حمص">
+        <div class="item-details">
+            <div class="item-name">حمص باللحمة</div>
+            <div class="item-desc">حمص كريمي مع قطع لحم صغيرة وزيت زيتون أصلي</div>
+        </div>
+        <div class="item-price">18 ر.س</div>
+    </div>
 
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const category = btn.getAttribute('data-cat');
-        items.forEach(item => {
-          if (category === 'all' || item.getAttribute('data-category') === category) {
-            item.classList.remove('hidden');
-          } else {
-            item.classList.add('hidden');
-          }
-        });
-      });
-    });
-  </script>
+    <div class="menu-item">
+        <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80" alt="عصير">
+        <div class="item-details">
+            <div class="item-name">عصير برتقال فريش</div>
+            <div class="item-desc">برتقال طازج معصور يدوياً بدون سكر مضاف</div>
+        </div>
+        <div class="item-price">12 ر.س</div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 جميع الحقوق محفوظة لمطعم شيبابيك</p>
+</footer>
+
 </body>
 </html>
