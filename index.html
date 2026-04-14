@@ -3,416 +3,520 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Restaurant Menu & CMS</title>
-    <!-- Tailwind CSS for Admin Panel -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <title>Pro Menu - 3 Languages</title>
+    
+    <!-- Fonts: Playfair Display (Serif), Caveat (Handwritten), Tajawal (Arabic/Kurdish) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* Menu Styles */
-        :root { --bg-color: #f9f7f2; --text-color: #4a3b32; --accent-color: #8c6b5d; }
-        body { font-family: 'Lato', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; min-height: 100vh; }
-        .menu-font { font-family: 'Playfair Display', serif; }
+        :root {
+            /* Day Theme (Like Image) */
+            --bg-color: #fdfbf7;
+            --text-color: #4a3b32;
+            --accent-color: #6d5246; /* Brownish */
+            --card-bg: #ffffff;
+            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --border-color: #e8e0d5;
+            --sidebar-bg: #ffffff;
+            --hover-bg: #f5f0eb;
+        }
+
+        .dark-mode {
+            /* Night Theme */
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --accent-color: #d4af37; /* Gold */
+            --card-bg: #2d2d2d;
+            --shadow: 0 4px 15px rgba(0,0,0,0.4);
+            --border-color: #444;
+            --sidebar-bg: #222;
+            --hover-bg: #333;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
         
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* RTL Support for Arabic/Kurdish */
+        body[dir="rtl"] {
+            font-family: 'Tajawal', sans-serif;
+        }        body[dir="rtl"] .handwritten {
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
         /* Sidebar */
-        .sidebar { width: 100px; background: #fff; height: 100vh; position: fixed; left: 0; top: 0; display: flex; flex-direction: column; align-items: center; padding-top: 20px; box-shadow: 2px 0 10px rgba(0,0,0,0.05); z-index: 100; transition: transform 0.3s ease; }
+        .sidebar {
+            width: 110px;
+            background: var(--sidebar-bg);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            z-index: 100;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+        
         .sidebar.collapsed { transform: translateX(-100%); }
-        .nav-icon { width: 60px; height: 60px; border-radius: 50%; margin-bottom: 15px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
-        .nav-icon:hover, .nav-icon.active { border-color: var(--accent-color); transform: scale(1.1); }
         
+        .nav-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nav-icon:hover, .nav-icon.active {
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+        }
+
         /* Main Content */
-        .main-content { margin-left: 100px; flex: 1; padding: 40px; transition: margin-left 0.3s ease; }
-        .main-content.expanded { margin-left: 0; }
+        .main-content {
+            margin-left: 110px;
+            flex: 1;
+            padding: 40px;
+            transition: margin-left 0.3s ease;
+            position: relative;
+        }        .main-content.expanded { margin-left: 0; }
+
+        /* Controls (Lang & Theme) */
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 120px; /* Adjust based on sidebar */
+            display: flex;
+            gap: 10px;
+            z-index: 150;
+        }
+        body[dir="rtl"] .controls { left: auto; right: 120px; }
         
-        /* Order Summary */
-        .order-summary { position: fixed; top: 20px; right: 20px; width: 300px; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); z-index: 90; display: none; }
+        .control-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: bold;
+            font-size: 12px;
+            color: var(--text-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .control-btn:hover { background: var(--hover-bg); }
+
+        /* Order Summary (Top Right) */
+        .order-summary {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 280px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            z-index: 90;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        body[dir="rtl"] .order-summary { right: auto; left: 20px; }
         
-        /* Menu Items */
-        .category-section { margin-bottom: 60px; }
-        .category-header { display: flex; align-items: center; margin-bottom: 20px; }
-        .category-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-left: 15px; border: 4px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .category-title { font-family: 'Playfair Display', serif; font-size: 32px; background: var(--accent-color); color: white; padding: 5px 20px; border-radius: 30px; }
-        .menu-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dotted #ccc; }
-        .item-price { font-weight: bold; font-size: 18px; color: var(--accent-color); }
-        .add-btn { background: var(--accent-color); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 20px; margin-left: 10px; }
+        .order-summary h3 {
+            font-family: 'Caveat', cursive; /* Handwritten style for title */
+            font-size: 28px;
+            color: var(--accent-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 10px;            text-align: center;
+        }
+        body[dir="rtl"] .order-summary h3 { font-family: 'Tajawal', sans-serif; font-weight: 900; }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .order-total {
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 15px;
+            border-top: 2px dashed var(--border-color);
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--accent-color);
+        }
+
+        /* Menu Typography & Layout */
+        .menu-title {
+            text-align: center;
+            margin-bottom: 50px;
+            margin-top: 20px;
+        }
+        .menu-title h1 {
+            font-size: 100px;
+            color: var(--accent-color);
+            font-family: 'Caveat', cursive; /* Big Handwritten */
+            line-height: 1;
+        }
+        .menu-title span {
+            font-size: 40px;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            font-family: 'Playfair Display', serif;
+            color: var(--text-color);
+        }
+
+        .category-section { margin-bottom: 60px; position: relative; }
         
-        /* Admin Panel Styles */
-        #adminPanel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f3f4f6; z-index: 200; overflow-y: auto; }
-        .admin-sidebar { width: 250px; background: #1f2937; color: white; height: 100vh; position: fixed; }
-        .admin-content { margin-left: 250px; padding: 30px; }
-        .item-row:hover { background-color: #f9fafb; }
-        .thumbnail { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+        .category-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        body[dir="rtl"] .category-header { flex-direction: row-reverse; }        
+        .category-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--card-bg);
+            box-shadow: var(--shadow);
+            margin-right: 20px;
+        }
+        body[dir="rtl"] .category-img { margin-right: 0; margin-left: 20px; }
+
+        .category-title {
+            font-family: 'Caveat', cursive;
+            font-size: 48px;
+            color: #fff;
+            background: var(--accent-color);
+            padding: 5px 25px;
+            border-radius: 50px;
+            transform: rotate(-2deg);
+        }
+        body[dir="rtl"] .category-title { font-family: 'Tajawal', sans-serif; font-weight: 900; transform: rotate(2deg); }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dotted var(--border-color);
+        }
         
-        /* Toggle Button */
-        .sidebar-toggle { position: absolute; top: 10px; right: -20px; background: var(--accent-color); color: white; border: none; width: 25px; height: 25px; border-radius: 0 5px 5px 0; cursor: pointer; z-index: 101; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+        .item-info { flex: 1; margin-left: 15px; }
+        body[dir="rtl"] .item-info { margin-left: 0; margin-right: 15px; }
+        
+        .item-info h4 { font-size: 18px; margin-bottom: 5px; font-weight: 700; }
+        .item-info p { font-size: 14px; color: #888; font-family: 'Tajawal', sans-serif; }
+        
+        .item-price { font-weight: bold; font-size: 20px; color: var(--accent-color); margin-left: 15px; }
+        body[dir="rtl"] .item-price { margin-left: 0; margin-right: 15px; }
+        
+        .add-btn {
+            background: var(--accent-color);
+            color: #fff;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .add-btn:active { transform: scale(0.9); }
+
+        /* Sidebar Toggle Button */
+        .sidebar-toggle {
+            position: absolute;
+            top: 15px;
+            right: -15px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 101;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        body[dir="rtl"] .sidebar-toggle { right: auto; left: -15px; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { width: 80px; }
+            .nav-icon { width: 50px; height: 50px; }
+            .main-content { margin-left: 80px; padding: 20px; }
+            .order-summary { position: relative; top: 0; right: 0; width: 100%; margin-bottom: 20px; }
+            .menu-title h1 { font-size: 60px; }
+            .category-title { font-size: 32px; }
+            .category-img { width: 100px; height: 100px; }
+            .controls { top: 10px; left: 90px; }
+            body[dir="rtl"] .controls { right: 90px; }
+        }
     </style>
 </head>
 <body>
-    <!-- ================= MENU VIEW ================= -->
-    <div id="menuView">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <button class="sidebar-toggle" onclick="toggleSidebar()">◀</button>
-            <img src="https://via.placeholder.com/60/8c6b5d/fff?text=B" class="nav-icon active" onclick="scrollToSection('main')" title="Main">
-            <img src="https://via.placeholder.com/60/d4a574/fff?text=A" class="nav-icon" onclick="scrollToSection('appetizer')" title="Appetizer">
-            <img src="https://via.placeholder.com/60/2ecc71/fff?text=S" class="nav-icon" onclick="scrollToSection('salad')" title="Salad">
-            <img src="https://via.placeholder.com/60/e74c3c/fff?text=D" class="nav-icon" onclick="scrollToSection('dessert')" title="Dessert">
-            <img src="https://via.placeholder.com/60/3498db/fff?text=Dr" class="nav-icon" onclick="scrollToSection('drinks')" title="Drinks">
-            <div style="margin-top: auto; margin-bottom: 20px; cursor: pointer; font-size: 24px;" onclick="openAdminLogin()" title="Admin Login">🔐</div>
-        </div>
 
-        <!-- Main Content -->
-        <div class="main-content" id="mainContent">
-            <!-- Order Summary -->
-            <div class="order-summary" id="orderSummary">
-                <h3 class="menu-font text-xl border-b-2 border-[#8c6b5d] pb-2 mb-3">Order Summary</h3>
-                <div id="orderItems" class="space-y-2 max-h-60 overflow-y-auto"></div>
-                <div class="flex justify-between font-bold text-lg mt-4 pt-2 border-t border-gray-300">
-                    <span>Total:</span>
-                    <span id="totalPrice">$0.00</span>
-                </div>
-                <button onclick="checkout()" class="w-full mt-4 bg-[#8c6b5d] text-white py-2 rounded-lg hover:bg-[#6d5246]">Checkout</button>
-            </div>
-
-            <div class="text-center mb-12">
-                <h1 class="menu-font text-8xl text-[#8c6b5d]">FOOD <br><span class="text-4xl tracking-widest">MENU</span></h1>
-            </div>
-
-            <!-- Dynamic Menu Content -->
-            <div id="menuContainer"></div>
-        </div>
+    <!-- Controls -->
+    <div class="controls">
+        <button class="control-btn" onclick="toggleTheme()">🌓</button>
+        <select class="control-btn" id="langSelect" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+            <option value="ku">کوردی</option>
+        </select>
+    </div>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">◀</button>
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200" class="nav-icon active" onclick="scrollTo('main')" alt="Burger">
+        <img src="https://images.unsplash.com/photo-1626202158825-3c5b13ad6155?w=200" class="nav-icon" onclick="scrollTo('appetizer')" alt="Appetizer">
+        <img src="https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=200" class="nav-icon" onclick="scrollTo('salad')" alt="Salad">
+        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200" class="nav-icon" onclick="scrollTo('dessert')" alt="Dessert">
+        <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=200" class="nav-icon" onclick="scrollTo('drinks')" alt="Drinks">
     </div>
 
-    <!-- ================= ADMIN PANEL ================= -->
-    <div id="adminPanel">
-        <div class="admin-sidebar p-6">
-            <h2 class="text-2xl font-bold mb-8">Admin Panel</h2>
-            <nav class="space-y-4">
-                <a href="#" onclick="showAdminSection('dashboard')" class="block py-2 px-4 bg-gray-700 rounded">Dashboard</a>
-                <a href="#" onclick="showAdminSection('add')" class="block py-2 px-4 hover:bg-gray-700 rounded">Add New Item</a>
-                <a href="#" onclick="logoutAdmin()" class="block py-2 px-4 text-red-400 mt-10">Logout</a>
-            </nav>
-        </div>
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
         
-        <div class="admin-content">
-            <!-- Dashboard Section -->
-            <div id="adminDashboard">                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-3xl font-bold text-gray-800">Menu Items Management</h2>
-                    <button onclick="showAdminSection('add')" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">+ Add Item</button>
-                </div>
-                
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <table class="w-full text-left">
-                        <thead class="bg-gray-100 border-b">
-                            <tr>
-                                <th class="p-4">Image</th>
-                                <th class="p-4">Name</th>
-                                <th class="p-4">Category</th>
-                                <th class="p-4">Price</th>
-                                <th class="p-4">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                            <!-- JS will populate this -->
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Order Summary -->
+        <div class="order-summary" id="orderSummary" style="display:none;">
+            <h3 data-i18n="orderSummary">Order Summary</h3>
+            <div id="orderItems"></div>
+            <div class="order-total">
+                <span data-i18n="total">Total:</span>
+                <span id="totalPrice">$0.00</span>
             </div>
+        </div>
 
-            <!-- Add/Edit Section -->
-            <div id="adminFormSection" class="hidden max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-                <h2 class="text-2xl font-bold mb-6" id="formTitle">Add New Item</h2>
-                <form onsubmit="saveItem(event)" class="space-y-4">
-                    <input type="hidden" id="itemId">
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Item Name</label>
-                        <input type="text" id="itemName" required class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                    </div>
+        <div class="menu-title">
+            <h1>FOOD</h1>
+            <span data-i18n="menu">MENU</span>
+        </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Price ($)</label>
-                            <input type="number" step="0.01" id="itemPrice" required class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Category</label>
-                            <select id="itemCategory" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
-                                <option value="main">Main Course</option>
-                                <option value="appetizer">Appetizer</option>
-                                <option value="salad">Salad</option>
-                                <option value="dessert">Dessert</option>
-                                <option value="drinks">Drinks</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="itemDesc" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md p-2"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Image Upload</label>
-                        <input type="file" id="itemImage" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"/>
-                        <img id="imagePreview" class="mt-2 w-32 h-32 object-cover rounded hidden">
-                    </div>
-
-                    <div class="flex gap-4 mt-6">
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Save Item</button>
-                        <button type="button" onclick="showAdminSection('dashboard')" class="bg-gray-300 text-gray-700 px-6 py-2 rounded hover:bg-gray-400">Cancel</button>
-                    </div>
-                </form>
-            </div>
+        <div id="menuContainer">
+            <!-- Sections will be injected here via JS -->
         </div>
     </div>
 
     <script>
-        // --- DATA MANAGEMENT ---
-        const defaultItems = [
-            { id: 1, name: "Gourmet Burger", price: 12.99, category: "main", desc: "Angus beef, cheddar, lettuce, tomato", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
-            { id: 2, name: "Pepperoni Pizza", price: 14.50, category: "main", desc: "Classic pepperoni, mozzarella, tomato sauce", image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400" },
-            { id: 3, name: "Grilled Salmon", price: 18.00, category: "main", desc: "Fresh salmon with asparagus and lemon butter", image: "https://images.unsplash.com/photo-1467003909585-2f8a7270028d?w=400" },
-            { id: 4, name: "Beef Steak", price: 25.00, category: "main", desc: "Ribeye steak 300g with mashed potatoes", image: "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=400" },
-            { id: 5, name: "Sushi Platter", price: 22.00, category: "main", desc: "Assorted fresh sushi and sashimi", image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400" },
-            { id: 6, name: "Chicken Wings", price: 9.99, category: "appetizer", desc: "Spicy buffalo wings with ranch dip", image: "https://images.unsplash.com/photo-1608039755401-742074f0548d?w=400" },
-            { id: 7, name: "Spring Rolls", price: 6.50, category: "appetizer", desc: "Crispy vegetable rolls with sweet chili", image: "https://images.unsplash.com/photo-1626202158825-3c5b13ad6155?w=400" },
-            { id: 8, name: "Caesar Salad", price: 8.99, category: "salad", desc: "Romaine lettuce, croutons, parmesan", image: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400" },
-            { id: 9, name: "Greek Salad", price: 9.50, category: "salad", desc: "Feta cheese, olives, cucumber, tomato", image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400" },
-            { id: 10, name: "Chocolate Cake", price: 7.99, category: "dessert", desc: "Rich dark chocolate layer cake", image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400" },
-            { id: 11, name: "Cheesecake", price: 8.50, category: "dessert", desc: "New York style with berry compote", image: "https://images.unsplash.com/photo-1524351199678-941a58a3df50?w=400" },
-            { id: 12, name: "Ice Cream", price: 5.99, category: "dessert", desc: "Vanilla bean with chocolate sauce", image: "https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400" },
-            { id: 13, name: "Coca Cola", price: 2.50, category: "drinks", desc: "Chilled soft drink", image: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400" },
-            { id: 14, name: "Fresh Lemonade", price: 4.00, category: "drinks", desc: "Freshly squeezed with mint", image: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400" },
-            { id: 15, name: "Iced Coffee", price: 4.50, category: "drinks", desc: "Cold brew with milk", image: "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?w=400" },
-            { id: 16, name: "Pasta Carbonara", price: 13.99, category: "main", desc: "Creamy sauce with bacon and egg", image: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400" },
-            { id: 17, name: "Fish & Chips", price: 11.99, category: "main", desc: "Battered cod with fries", image: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400" }, // Reusing generic food img for demo
-            { id: 18, name: "Onion Rings", price: 5.99, category: "appetizer", desc: "Crispy fried onion rings", image: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=400" },
-            { id: 19, name: "Tacos", price: 10.99, category: "main", desc: "Beef tacos with salsa and guacamole", image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400" },
-            { id: 20, name: "Fruit Salad", price: 6.99, category: "dessert", desc: "Fresh seasonal fruits", image: "https://images.unsplash.com/photo-1519996529931-28324d5a630e?w=400" }
+        // --- DATA & TRANSLATIONS ---
+        const translations = {
+            en: {
+                menu: "MENU",
+                orderSummary: "Order Summary",
+                total: "Total:",
+                checkout: "Checkout",
+                categories: { main: "Main Course", appetizer: "Appetizer", salad: "Salad", dessert: "Dessert", drinks: "Drinks" },
+                items: {
+                    "burger": { name: "Gourmet Black Burger", desc: "Angus beef, cheddar, lettuce on a black bun." },
+                    "spring": { name: "Gourmet Spring Rolls", desc: "Hand-rolled with fresh vegetables and sweet chili sauce." },
+                    "salad": { name: "Fresh Garden Salad", desc: "Romaine lettuce, avocado, and balsamic dressing." },
+                    "dessert": { name: "Chocolate Lava Cake", desc: "Warm molten center served with vanilla ice cream." }
+                }
+            },            ar: {
+                menu: "قائمة الطعام",
+                orderSummary: "ملخص الطلب",
+                total: "المجموع:",
+                checkout: "إتمام الطلب",
+                categories: { main: "الأطباق الرئيسية", appetizer: "المقبلات", salad: "السلطات", dessert: "الحلويات", drinks: "المشروبات" },
+                items: {
+                    "burger": { name: "برجر أسود فاخر", desc: "لحم أنغوس، شيدر، خس على خبز أسود." },
+                    "spring": { name: "سبرينغ رولز فاخرة", desc: "محشوة بالخضار الطازجة مع صوص الفلفل الحلو." },
+                    "salad": { name: "سلطة حديقة طازجة", desc: "خس رومين، أفوكادو، وصوص البلسميك." },
+                    "dessert": { name: "كيكة شوكولاتة لاڤا", desc: "قلب دافئ سائل تقدم مع آيس كريم الفانيليا." }
+                }
+            },
+            ku: {
+                menu: "پێرستی خواردن",
+                orderSummary: "کورتەی داواکاری",
+                total: "کۆ:",
+                checkout: "تەواوکردن",
+                categories: { main: "خواردنی سەرەکی", appetizer: "پێشگر", salad: "سەڵاتە", dessert: "شیرینی", drinks: "خواردنەوەکان" },
+                items: {
+                    "burger": { name: "هەمبەرگری ڕەشی تایبەت", desc: "گۆشتی ئەنگەس، چێدەر، لەتۆس لەسەر نانی ڕەش." },
+                    "spring": { name: "سپرینگ ڕۆڵز تایبەت", desc: "دەستی لەگەڵ سەوزە تازەکان و سۆسی فلفل." },
+                    "salad": { name: "سەڵاتەی باخچە تازە", desc: "لەتۆس، ئەڤۆکادۆ، و سۆسی بەلسامیک." },
+                    "dessert": { name: "کێکی شۆکلاتەی لاڤا", desc: "ناوەندی گەرم و شل لەگەڵ ئایسکرێمی ڤانیلا." }
+                }
+            }
+        };
+
+        const menuData = [
+            { id: 1, key: "burger", cat: "main", price: 18.50, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" },
+            { id: 2, key: "spring", cat: "appetizer", price: 12.25, img: "https://images.unsplash.com/photo-1626202158825-3c5b13ad6155?w=400" },
+            { id: 3, key: "salad", cat: "salad", price: 14.00, img: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400" },
+            { id: 4, key: "dessert", cat: "dessert", price: 10.25, img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400" },
+            // Adding more items to simulate 20 pages feel
+            { id: 5, key: "burger", cat: "main", price: 16.00, img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=400" },
+            { id: 6, key: "spring", cat: "appetizer", price: 11.50, img: "https://images.unsplash.com/photo-1608039755401-742074f0548d?w=400" },
         ];
 
-        let menuItems = JSON.parse(localStorage.getItem('menuItems')) || defaultItems;
+        let currentLang = 'en';
         let cart = [];
 
-        // --- MENU FUNCTIONS ---        function renderMenu() {
-            const container = document.getElementById('menuContainer');
-            container.innerHTML = '';
-            const categories = ['main', 'appetizer', 'salad', 'dessert', 'drinks'];
-            const catNames = { main: 'Main Course', appetizer: 'Appetizer', salad: 'Salad', dessert: 'Dessert', drinks: 'Drinks' };
-            const catIcons = { main: '🍔', appetizer: '🥟', salad: '🥗', dessert: '🍰', drinks: '🥤' };
+        // --- FUNCTIONS ---
+        function init() {
+            renderMenu();
+            changeLanguage('en');
+        }
 
-            categories.forEach(cat => {
-                const items = menuItems.filter(i => i.category === cat);
-                if (items.length === 0) return;
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            container.innerHTML = '';            const cats = ['main', 'appetizer', 'salad', 'dessert', 'drinks'];
+            
+            // Images for headers
+            const headerImgs = {
+                main: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+                appetizer: "https://images.unsplash.com/photo-1626202158825-3c5b13ad6155?w=400",
+                salad: "https://images.unsplash.com/photo-1550304943-4f24f54ddde9?w=400",
+                dessert: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400",
+                drinks: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400"
+            };
+
+            cats.forEach(cat => {
+                const items = menuData.filter(i => i.cat === cat);
+                if(items.length === 0) return;
 
                 const section = document.createElement('div');
                 section.className = 'category-section';
                 section.id = `section-${cat}`;
-                
-                // Header
-                const header = document.createElement('div');
-                header.className = 'category-header';
-                header.innerHTML = `
-                    <img src="${items[0].image}" class="category-img" alt="${cat}">
-                    <div class="category-title">${catIcons[cat]} ${catNames[cat]}</div>
-                `;
-                section.appendChild(header);
 
-                // Items
+                section.innerHTML = `
+                    <div class="category-header">
+                        <img src="${headerImgs[cat]}" class="category-img">
+                        <div class="category-title" data-i18n-cat="${cat}">${translations[currentLang].categories[cat]}</div>
+                    </div>
+                `;
+
                 items.forEach(item => {
+                    const itemData = translations[currentLang].items[item.key];
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'menu-item';
                     itemDiv.innerHTML = `
-                        <div class="flex items-center gap-4">
-                            <img src="${item.image}" class="w-16 h-16 rounded object-cover">
-                            <div>
-                                <h4 class="font-bold text-lg">${item.name}</h4>
-                                <p class="text-sm text-gray-500">${item.desc}</p>
+                        <div style="display:flex; align-items:center;">
+                            <img src="${item.img}" style="width:60px; height:60px; border-radius:50%; object-fit:cover; margin-right:15px;">
+                            <div class="item-info">
+                                <h4>${itemData.name}</h4>
+                                <p>${itemData.desc}</p>
                             </div>
                         </div>
-                        <div class="flex items-center">
+                        <div style="display:flex; align-items:center;">
                             <span class="item-price">$${item.price.toFixed(2)}</span>
                             <button class="add-btn" onclick="addToCart(${item.id})">+</button>
                         </div>
                     `;
                     section.appendChild(itemDiv);
                 });
-
                 container.appendChild(section);
             });
         }
 
-        function addToCart(id) {
-            const item = menuItems.find(i => i.id === id);            cart.push(item);
-            updateCart();
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        function updateCart() {
-            const summary = document.getElementById('orderSummary');
-            const itemsContainer = document.getElementById('orderItems');
-            const totalDisplay = document.getElementById('totalPrice');
+        function changeLanguage(lang) {            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.body.dir = lang === 'ar' || lang === 'ku' ? 'rtl' : 'ltr';
             
-            if (cart.length > 0) summary.style.display = 'block';
-            else summary.style.display = 'none';
-
-            itemsContainer.innerHTML = '';
-            let total = 0;
-
-            cart.forEach((item, index) => {
-                total += item.price;
-                const div = document.createElement('div');
-                div.className = 'flex justify-between items-center text-sm bg-gray-50 p-2 rounded';
-                div.innerHTML = `
-                    <span>${item.name}</span>
-                    <div class="flex items-center gap-2">
-                        <span>$${item.price.toFixed(2)}</span>
-                        <span class="text-red-500 cursor-pointer" onclick="removeFromCart(${index})">×</span>
-                    </div>
-                `;
-                itemsContainer.appendChild(div);
+            // Update static texts
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.innerText = translations[lang][el.getAttribute('data-i18n')];
+            });
+            
+            // Update Category Titles
+            document.querySelectorAll('[data-i18n-cat]').forEach(el => {
+                const cat = el.getAttribute('data-i18n-cat');
+                el.innerText = translations[lang].categories[cat];
             });
 
-            totalDisplay.innerText = '$' + total.toFixed(2);
+            // Re-render menu items for translation
+            renderMenu();
+            updateCart(); // Update cart item names
         }
 
-        function scrollToSection(cat) {
-            const el = document.getElementById(`section-${cat}`);
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-            
-            // Update active icon
-            document.querySelectorAll('.nav-icon').forEach(icon => icon.classList.remove('active'));
-            event.target.classList.add('active');
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
         }
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('collapsed');
             document.getElementById('mainContent').classList.toggle('expanded');
-        }
-        // --- ADMIN PANEL FUNCTIONS ---
-        function openAdminLogin() {
-            const pass = prompt("Enter Admin Password:");
-            if (pass === "admin") {
-                document.getElementById('menuView').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                renderAdminTable();
-            } else {
-                alert("Wrong password!");
-            }
+            const btn = document.querySelector('.sidebar-toggle');
+            btn.innerHTML = document.getElementById('sidebar').classList.contains('collapsed') ? '▶' : '◀';
         }
 
-        function logoutAdmin() {
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('menuView').style.display = 'flex';
-            renderMenu(); // Refresh menu with changes
-        }
-
-        function showAdminSection(section) {
-            if (section === 'dashboard') {
-                document.getElementById('adminDashboard').classList.remove('hidden');
-                document.getElementById('adminFormSection').classList.add('hidden');
-                renderAdminTable();
-            } else {
-                document.getElementById('adminDashboard').classList.add('hidden');
-                document.getElementById('adminFormSection').classList.remove('hidden');
-                document.getElementById('formTitle').innerText = "Add New Item";
-                document.querySelector('form').reset();
-                document.getElementById('itemId').value = '';
-                document.getElementById('imagePreview').classList.add('hidden');
-            }
-        }
-
-        function renderAdminTable() {
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '';
-            menuItems.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = 'item-row border-b';
-                tr.innerHTML = `
-                    <td class="p-4"><img src="${item.image}" class="thumbnail"></td>
-                    <td class="p-4 font-bold">${item.name}</td>
-                    <td class="p-4 capitalize">${item.category}</td>
-                    <td class="p-4">$${item.price.toFixed(2)}</td>
-                    <td class="p-4">
-                        <button onclick="editItem(${item.id})" class="text-blue-600 hover:underline mr-2">Edit</button>
-                        <button onclick="deleteItem(${item.id})" class="text-red-600 hover:underline">Delete</button>
-                    </td>
-                `;                tbody.appendChild(tr);
-            });
-        }
-
-        function deleteItem(id) {
-            if (confirm('Are you sure?')) {
-                menuItems = menuItems.filter(i => i.id !== id);
-                saveToStorage();
-                renderAdminTable();
-            }
-        }
-
-        function editItem(id) {
-            const item = menuItems.find(i => i.id === id);
-            document.getElementById('adminDashboard').classList.add('hidden');
-            document.getElementById('adminFormSection').classList.remove('hidden');
-            document.getElementById('formTitle').innerText = "Edit Item";
-            
-            document.getElementById('itemId').value = item.id;
-            document.getElementById('itemName').value = item.name;
-            document.getElementById('itemPrice').value = item.price;
-            document.getElementById('itemCategory').value = item.category;
-            document.getElementById('itemDesc').value = item.desc;
-            
-            const preview = document.getElementById('imagePreview');
-            preview.src = item.image;
-            preview.classList.remove('hidden');
-        }
-
-        function saveItem(e) {
-            e.preventDefault();
-            const id = document.getElementById('itemId').value;
-            const name = document.getElementById('itemName').value;
-            const price = parseFloat(document.getElementById('itemPrice').value);
-            const category = document.getElementById('itemCategory').value;
-            const desc = document.getElementById('itemDesc').value;
-            const fileInput = document.getElementById('itemImage');
-            
-            const saveData = (imgData) => {
-                if (id) {
-                    // Edit
-                    const index = menuItems.findIndex(i => i.id == id);
-                    menuItems[index] = { ...menuItems[index], name, price, category, desc, image: imgData || menuItems[index].image };
-                } else {
-                    // Add
-                    const newId = menuItems.length > 0 ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
-                    menuItems.push({ id: newId, name, price, category, desc, image: imgData || 'https://via.placeholder.com/400' });
-                }
-                saveToStorage();
-                showAdminSection('dashboard');            };
-
-            if (fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { saveData(e.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                saveData(null);
-            }
-        }
-
-        function saveToStorage() {
-            localStorage.setItem('menuItems', JSON.stringify(menuItems));
-        }
-
-        function checkout() {
-            alert("Order placed successfully! Total: " + document.getElementById('totalPrice').innerText);
-            cart = [];
+        function addToCart(id) {
+            const item = menuData.find(i => i.id === id);
+            const itemData = translations[currentLang].items[item.key];
+            cart.push({ ...item, name: itemData.name, price: item.price });
             updateCart();
+            
+            // Show summary
+            document.getElementById('orderSummary').style.display = 'block';
         }
 
-        // Initialize
-        renderMenu();
+        function updateCart() {
+            const container = document.getElementById('orderItems');
+            container.innerHTML = '';
+            let total = 0;
+            
+            // Group by name for cleaner look
+            const counts = {};
+            cart.forEach(x => { counts[x.name] = (counts[x.name] || 0) + 1; });
+                        // Calculate total based on original array to keep price accurate
+            // Note: simplified for demo
+            
+            Object.keys(counts).forEach(name => {
+                const count = counts[name];
+                const originalItem = cart.find(c => c.name === name); // Find one to get price
+                const price = originalItem.price;
+                total += price * count;
+
+                const div = document.createElement('div');
+                div.className = 'order-item';
+                div.innerHTML = `
+                    <span>${count}x ${name}</span>
+                    <span>$${(price * count).toFixed(2)}</span>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('totalPrice').innerText = '$' + total.toFixed(2);
+        }
+
+        function scrollTo(id) {
+            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+            event.target.classList.add('active');
+            const el = document.getElementById(`section-${id}`);
+            if(el) el.scrollIntoView({behavior: 'smooth'});
+        }
+
+        init();
     </script>
 </body>
 </html>
